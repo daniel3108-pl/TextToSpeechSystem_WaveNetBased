@@ -1,7 +1,11 @@
 # Text To Speech System - Based on Google's WaveNet
 
-A repository for TTS system using Google’s WaveNet algorithm.
+A repository for TTS system for my BEng Thesis, based on Google’s WaveNet algorithm.
 
+## Datasets
+
+- [LJSpeech Dataset](https://keithito.com/LJ-Speech-Dataset/)
+- ["Hi-Fi Multi-Speaker English TTS Dataset" Bakhturina, E., Lavrukhin, V., Ginsburg, B. and Zhang, Y., 2021: arxiv.org/abs/2104.01497](http://www.openslr.org/109/)
 
 ## References
 
@@ -11,3 +15,4 @@ A repository for TTS system using Google’s WaveNet algorithm.
 - [Mingyang Zhang, Xin Wang, Fuming Fang, Haizhou Li, Junichi Yamagishi, "Joint training framework for text-to-speech and voice conversion using multi-source Tacotron and WaveNet", arXiv:1903.12389v2, Apr 2019](https://arxiv.org/abs/1903.12389)
 - [Xi Wang, Huaiping Ming, Lei He, Frank K. Soong, "s-Transformer: Segment-Transformer for Robust Neural Speech Synthesis", arXiv:2011.08480v1, Nov 2020](https://arxiv.org/abs/2011.08480)
 - [Jonathan Shen, Ruoming Pang, Ron J. Weiss, Mike Schuster, Navdeep Jaitly, Zongheng Yang, Zhifeng Chen, Yu Zhang, Yuxuan Wang, RJ Skerry-Ryan, Rif A. Saurous, Yannis Agiomyrgiannakis, Yonghui Wu, "NATURAL TTS SYNTHESIS BY CONDITIONING WAVENET ON MEL SPECTROGRAM PREDICTIONS", arXiv:1712.05884v2, Feb 2018](https://arxiv.org/abs/1712.05884)
+- [Nvidia/Tacotron2 Repository](https://github.com/NVIDIA/tacotron2)
