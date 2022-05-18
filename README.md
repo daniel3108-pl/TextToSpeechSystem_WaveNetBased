@@ -2,7 +2,7 @@
 
 A repository for TTS system for my BEng Thesis, based on Google’s WaveNet algorithm.
 
-## Google Cloab
+## Google Colab
 - [WaveNetVocoderNotebook.ipynb](https://colab.research.google.com/drive/1rohLMsZv9epPb8EOCnMmLCr3mtAhy4Lx?usp=sharing)
 
 ## Datasets
