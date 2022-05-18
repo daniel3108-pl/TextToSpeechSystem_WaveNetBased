@@ -2,6 +2,9 @@
 
 A repository for TTS system for my BEng Thesis, based on Google’s WaveNet algorithm.
 
+## Google Cloab
+- [WaveNetVocoderNotebook.ipynb](https://colab.research.google.com/drive/1rohLMsZv9epPb8EOCnMmLCr3mtAhy4Lx?usp=sharing)
+
 ## Datasets
 
 - [LJSpeech Dataset](https://keithito.com/LJ-Speech-Dataset/)
