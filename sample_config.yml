@@ -14,5 +14,5 @@ model:
   output-file: out.pth
 dataset:
   definition-file: costam.csv
-  audio-directory: ./dupa/
+  audio-directory: ./audio/
 

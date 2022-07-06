@@ -58,8 +58,8 @@ class TrainingConfigLoader:
             if eps < 1 and batch < 1 and lr <= 0:
                 return False
 
-            with open(model_config["output-file"], "w") as f:
-                f.write("")
+        with open(model_config["output-file"], "w") as f:
+            f.write("")
 
         if not os.path.isfile(model_config["output-file"]):
             os.remove(model_config['output-file'])
