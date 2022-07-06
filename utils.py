@@ -11,7 +11,11 @@ U = TypeVar("U")
 
 
 class Monad(Generic[T]):
-    def __init__(self, value: T) -> None:
+
+    __internal_init = object()
+
+    def __init__(self, internal_init, value: T) -> None:
+        assert internal_init == Monad.__internal_init, "Cannot use Monad's initializer explicitly"
         self.value: object = value
 
     def flat_map(self, func: Callable[T, Monad[U]]) -> Monad[U]:
@@ -20,9 +24,9 @@ class Monad(Generic[T]):
     def map(self, func: Callable[T, U]) -> U:
         return func(self.value)
 
-    @staticmethod
-    def some(value: T):
-        return Monad(value)
+    @classmethod
+    def some(cls, value: T):
+        return Monad(cls.__internal_init, value)
 
     def unbind(self) -> T:
         return self.value
