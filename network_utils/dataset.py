@@ -7,6 +7,8 @@ import torch
 import torchaudio
 from torch.utils.data import Dataset
 
+from utils import to_mel_spect
+
 
 class SpeechSamplesDataset(Dataset):
     """Klasa ulatwiajaca ladowanie zestwau plikow audio
@@ -46,12 +48,13 @@ class SpeechSamplesDataset(Dataset):
         audio_name = os.path.join(self.root_dir,
                                   self.audio_frame.iloc[idx, 0]) + ".wav"
         waveform, samplerate = torchaudio.load(audio_name)
+        mel = torch.Tensor(to_mel_spect(waveform, samplerate)).to(torch.float32)
 
         if self.__cuda:
             waveform = waveform.to("cuda")
 
-        transcription = self.audio_frame.iloc[idx, 1].lower()
-        sample = {"samplerate": samplerate, "waveform": waveform, "transcription": transcription, "filepath": audio_name}
+        transcription = self.audio_frame.iloc[idx, 2].lower()
+        sample = {"samplerate": samplerate, "waveform": waveform, "mel": mel,"transcription": transcription, "filepath": audio_name}
 
         if (self.transform):
             sample = self.transform(sample)

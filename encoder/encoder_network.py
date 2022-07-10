@@ -1,45 +1,35 @@
+from typing import *
+
 import torch
-import torch.functional as F
 import torch.nn as nn
-import torchtext as tt
+import torch.nn.functional as F
 
 
 class EncoderNetwork (nn.Module):
-    def __init__(self, batch_size, hidden_dim, lstm_layers, input_size) -> None:
+    def __init__(self, params: Dict) -> None:
         super(EncoderNetwork, self).__init__()
 
-        # Hyperparameters
-        self.batch_size = batch_size
-        self.hidden_dim = hidden_dim
-        self.LSTM_layers = lstm_layers
-        self.input_size = input_size
+        self.convs = nn.ModuleList()
+        for _ in range(3):
+            self.convs.append(
+                nn.Sequential(
+                    nn.Conv1d(params['embed_dim'],
+                              params['embed_dim'],
+                              kernel_size=params['kernel_size'],
+                              stride=1,
+                              padding=int((params['kernel_size'] - 1) / 2),
+                              dilation=1),
+                    nn.BatchNorm1d(params['embed_dim'])
+                )
+            )
 
-        self.dropout = nn.Dropout(0.5)
-        self.embeding = nn.Embedding(self.input_size, self.hidden_dim, padding_idx=0)
-        self.lstm = nn.LSTM(input_size=self.hidden_dim, hidden_size=self.hidden_dim, num_layers=self.LSTM_layers, batch_first=True)
-        self.fc1 = nn.Linear(in_features=self.hidden_dim, out_features=self.hidden_dim*2)
-        self.fc2 = nn.Linear(self.hidden_dim*2, 1)
+        self.lstm = nn.LSTM(params['embed_dim'], int(params['embed_dim'] / 2), 1, batch_first=True, bidirectional=True)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Hidden and cell state definion
-        h = torch.zeros((self.LSTM_layers, x.size(0), self.hidden_dim))
-        c = torch.zeros((self.LSTM_layers, x.size(0), self.hidden_dim))
+        for conv in self.convs:
+            x = F.dropout(F.relu(conv(x)), 0.5, training=True)
 
-        # Initialization fo hidden and cell states
-        torch.nn.init.xavier_normal_(h)
-        torch.nn.init.xavier_normal_(c)
 
-        # Each sequence "x" is passed through an embedding layer
-        out = self.embedding(x)
-        # Feed LSTMs
-        out, (hidden, cell) = self.lstm(out, (h,c))
-        out = self.dropout(out)
-        # The last hidden state is taken
-        out = torch.relu_(self.fc1(out[:,-1,:]))
-        out = self.dropout(out)
-        out = torch.sigmoid(self.fc2(out))
-
-        return out
 
 
 

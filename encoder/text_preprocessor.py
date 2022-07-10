@@ -1,35 +1,65 @@
+from typing import *
+
 from utils import Monad
+from .text_helpers import remove_symbols, remove_empty_chars
 
+__punctuation = '!\'(),.:;? '
+__special = '-'
+__letters = 'abcdefghijklmnopqrstuvwxyz'
 
-LETTERS = ['a','b','c','d','e','f','g','h','i','j','k','l','m',
-           'n','o','p','q','r','s','t','u','v','w','x','y','z',' ']
+accepted_symbols = list(__letters) + list(__punctuation) + list(__special)
 
 
 class TextPreprocessor:
+
     def __init__(self):
         pass
 
-    # Ta monada to tylko zeby ladniej kod wygladal tak naprawde
-    def transform(self, text: str) -> str:
+    def clean(self, text: str) -> Tuple[Dict, Dict]:
         return Monad.some(text) \
                     .map(str.lower) \
                     .map(str.strip) \
-                    .map(self.__remove_symbols) \
-                    .map(self.__remove_empty_chars) \
+                    .map(lambda t: remove_symbols(t, accepted_symbols)) \
+                    .map(remove_empty_chars) \
                     .unbind()
 
-    def __remove_symbols(self, text) -> str:
-        return "".join([char for char in text if char in LETTERS])
+    def to_c2i_i2c(self, text: str) -> Tuple[Dict, Dict]:
+        """Transformuje tekst to postaci słownika znak indeks, indeks znak
+        :param text: tekst do transformacji
+        :type text: str
+        :return: Krotkę słowników char 2 index, index 2 char
+        """
+        char2idx = dict()
+        idx2char = dict()
 
-    def __remove_empty_chars(self, text) -> str:
-        text_arr = list(text)
-        i, j = 0, 1
-        while i < len(text_arr) and j < len(text_arr): # fajny O(n) algos na usuwanie powtarzajacych sie spacji
-            if text_arr[i] == " " and text_arr[j] == " ":
-                del text_arr[j]
-                continue
-            i += 1
-            j += 1
+        i = 0
+        for char in text:
+            if char not in char2idx.keys():
+                char2idx[char] = i
+                idx2char[i] = char
+                i+=1
+
+        return char2idx, idx2char
+
+
+class OneHotVectorSequencer:
+
+    def __init__(self):
+            pass
+
+    def sequence_text(self, text: str) -> List[int]:
+        seq = [[1 if char == s else 0 for s in accepted_symbols] for char in text]
+        return seq
+
+    def desequence_text(self, sequence: List[List[int]]) -> str:
+        assert isinstance(sequence, list), "sequence has to be a list of int"
+
+        text_arr = []
+        for char_arr in sequence:
+            i = 0
+            for num in char_arr:
+                if num == 1:
+                    text_arr.append(accepted_symbols[i])
+                i += 1
 
         return "".join(text_arr)
-
