@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import *
+
 import os
+
 import pandas as pd
 import torch
 import torchaudio
@@ -10,7 +11,7 @@ from torch.utils.data import Dataset
 class SpeechSamplesDataset(Dataset):
     """Klasa ulatwiajaca ladowanie zestwau plikow audio
     """
-    def __init__(self, csv_file, root_dir, csv_sep=",", transform=None, cuda=False):
+    def __init__(self, csv_file, root_dir, csv_sep="\t", transform=None, cuda=False):
         """Metoda inicializujaca klase zestawu danych
 
         :param csv_file: sciezka do pliku csv opisujacy zestaw danych tekstowych
@@ -19,7 +20,7 @@ class SpeechSamplesDataset(Dataset):
         :param transform:
         :return: None
         """
-        self.audio_frame = pd.read_csv(csv_file, sep=csv_sep)
+        self.audio_frame = pd.read_csv(root_dir + csv_file, sep=csv_sep)
         self.root_dir = root_dir
         self.transform = transform
         if torch.cuda.is_available():
@@ -49,7 +50,7 @@ class SpeechSamplesDataset(Dataset):
         if self.__cuda:
             waveform = waveform.to("cuda")
 
-        transcription = self.audio_frame.iloc[idx, 1]
+        transcription = self.audio_frame.iloc[idx, 1].lower()
         sample = {"samplerate": samplerate, "waveform": waveform, "transcription": transcription, "filepath": audio_name}
 
         if (self.transform):

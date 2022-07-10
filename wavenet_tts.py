@@ -1,12 +1,8 @@
-from typing import *
-import os, sys
-import json
-from config_loader import TrainingConfigLoader
-import threading
-import logging
-from utils import Monad
 import argparse
+import logging
+
 from audio_generator import AudioGenerator
+from exceptions import ConfigLoadingUnsuccessful
 from tts_trainer import TtsTrainer
 
 
@@ -30,10 +26,15 @@ def main(args: argparse.Namespace) -> None:
     logging.basicConfig(level=logging.INFO)
 
     if args.func == "train":
-        trainer = TtsTrainer(args.config)
+        try:
+            trainer = TtsTrainer(args.config)
+            trainer.do_training()
+        except ConfigLoadingUnsuccessful as ex:
+            logging.exception(ex)
     elif args.func == "generate":
         text = args.text or input("Text to generate from: \n")
-        audio_generator = AudioGenerator(text)
+        audio_generator = AudioGenerator(text, None)
+        audio_generator.do_generation()
 
 
 if __name__ == "__main__":

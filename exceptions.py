@@ -1,0 +1,3 @@
+
+class ConfigLoadingUnsuccessful(Exception):
+    pass

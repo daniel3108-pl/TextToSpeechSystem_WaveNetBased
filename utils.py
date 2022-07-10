@@ -1,10 +1,10 @@
-from __future__ import  annotations
+from __future__ import annotations
 
-import matplotlib.pyplot as plt
-import librosa
-import torchaudio
 from typing import *
 
+import librosa
+import matplotlib.pyplot as plt
+import torchaudio
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -16,13 +16,13 @@ class Monad(Generic[T]):
 
     def __init__(self, internal_init, value: T) -> None:
         assert internal_init == Monad.__internal_init, "Cannot use Monad's initializer explicitly"
-        self.value: object = value
+        self.value: T = value
 
     def flat_map(self, func: Callable[T, Monad[U]]) -> Monad[U]:
         return func(self.value)
 
-    def map(self, func: Callable[T, U]) -> U:
-        return func(self.value)
+    def map(self, func: Callable[T, U]) -> Monad[U]:
+        return Monad.some(func(self.value))
 
     @classmethod
     def some(cls, value: T):

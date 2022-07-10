@@ -2,8 +2,37 @@
 
 A repository for TTS system for my BEng Thesis, based on Google’s WaveNet algorithm.
 
-## Google Colab
-- [WaveNetVocoderNotebook.ipynb](https://colab.research.google.com/drive/1rohLMsZv9epPb8EOCnMmLCr3mtAhy4Lx?usp=sharing)
+## Requirements for running app
+Have **python 3.8** or newer installed, preferred [**anaconda**](https://www.anaconda.com) distribution
+
+Install all necessary libraries used by the app with requirements.txt file
+```
+python3 -m pip install -r requirements.txt
+```
+
+## How to run application
+
+### Training the model
+```bash
+python3 wavenet_tts.py train --config [config_path]
+```
+
+### Generating audio from text
+```bash
+python3 wavenet_tts.py generate --config [config_path] --out [audio_out_path]
+```
+
+For providing text there are 3 ways:
+
+- using `--text` option from command e.g. 
+    ```
+    python3 wavenet_tts.py generate --text "some funny text" ...rest
+    ```
+- inputing from console after running the app, app will ask for input
+- using terminal pipe functionality e.g.
+    ```
+    cat some_file_with_text.txt | python3 wavenet_tts_main.py ...rest
+  ```
 
 ## Datasets
 

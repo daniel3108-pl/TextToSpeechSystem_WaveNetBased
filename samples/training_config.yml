@@ -18,4 +18,3 @@ dataset:                            # Konfiguracja zestawu danych uczących
   root-dir: ./dataset/
   definition-file: metadata.csv       # csv z opisem i powiązaniem wypowiedzi tekstowych z plikami csv
   audio-directory: wavs/         # ścieżka do plików audio w kontekscie root-dir np. root-dir/sciezka
-
