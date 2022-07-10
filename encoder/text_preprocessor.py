@@ -53,13 +53,4 @@ class OneHotVectorSequencer:
 
     def desequence_text(self, sequence: List[List[int]]) -> str:
         assert isinstance(sequence, list), "sequence has to be a list of int"
-
-        text_arr = []
-        for char_arr in sequence:
-            i = 0
-            for num in char_arr:
-                if num == 1:
-                    text_arr.append(accepted_symbols[i])
-                i += 1
-
-        return "".join(text_arr)
+        return "".join([accepted_symbols[i] for char_arr in sequence for i, num in enumerate(char_arr) if num == 1])

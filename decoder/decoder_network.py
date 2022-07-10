@@ -6,8 +6,11 @@ class DecoderPrenet(nn.Module):
     def __init__(self, input_dim):
         super(DecoderPrenet, self).__init__()
 
+        self.layers = nn.ModuleList()
+
     def forward(self, x):
-        x = F.dropout(F.relu(), p=0.5, training=True)
+        x = F.dropout(F.relu(x), p=0.5, training=True)
+        return x
 
 
 class DecoderNetwork(nn.Module):
@@ -34,5 +37,3 @@ class DecoderNetwork(nn.Module):
         out, (hid, cell) = self.lstm(embedded, (hid, cell))
         prediction = self.linear(out.squeeze(0))
         return prediction, hid, cell
-
-
