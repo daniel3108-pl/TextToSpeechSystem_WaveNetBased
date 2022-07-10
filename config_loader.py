@@ -14,7 +14,7 @@ class TrainingConfigLoader:
     def __init__(self) -> None:
         pass
 
-    def load_config(self, path: str) -> Dict[str, Union[str, float, int]]:
+    def load_config(self, path: str) -> Dict:
         """Metoda ładująca plik konfiguracyjny
         :param path: ścieżka do pliku konfiguracyjnego
         :return: Obiekt typu Dictionary z załadowanymi argumentami
@@ -28,7 +28,7 @@ class TrainingConfigLoader:
 
         return config_file if self.__validate_config(config_file) else None
 
-    def __validate_config(self, config: Dict[str, str]) -> bool:
+    def __validate_config(self, config: Dict) -> bool:
         """Metoda wywołująca walidację pliku konfiguracyjnego
         :param config: obiekt dictionary z załadowaną konfiguracją
         :return: True jeśli konfiguracja jest poprawna False jeśli nie
@@ -37,7 +37,7 @@ class TrainingConfigLoader:
                and self.__has_proper_model_value(config) \
                and self.__has_proper_dataset_values(config)
 
-    def __has_proper_fields(self, config: Dict[str, Union[str, float, int]]) -> bool:
+    def __has_proper_fields(self, config: Dict) -> bool:
         if not list(config.keys()) == ['model', 'dataset']:
             logging.error("Config misses model or dataset categories")
             return False
@@ -62,7 +62,7 @@ class TrainingConfigLoader:
 
         return True
 
-    def __has_proper_model_value(self, config: Dict[str, Union[str, float, int]]):
+    def __has_proper_model_value(self, config: Dict):
         model_config = config["model"]
 
         for model in ['encoder', 'decoder', 'wavenet']:
@@ -79,7 +79,7 @@ class TrainingConfigLoader:
         os.remove(model_config['output-file'])
         return True
 
-    def __is_model_type_config_correct(self, model_config: Dict[str, Union[int, float]], model: str) -> bool:
+    def __is_model_type_config_correct(self, model_config: Dict, model: str) -> bool:
         model_config_for_type = model_config[model]
 
         if not is_int(model_config_for_type["epochs"]) or \
@@ -93,16 +93,15 @@ class TrainingConfigLoader:
 
         if eps < 1 and batch < 1 and lr <= 0:
             return False
+
         return True
 
-    def __has_proper_dataset_values(self, config: Dict[str, Union[str, float, int]]) -> bool:
-        return True  # For debug only
-
-        if not os.path.isfile(config['dataset']['definition-file']):
-            return False
+    def __has_proper_dataset_values(self, config: Dict) -> bool:
         if not os.path.isdir(config['dataset']['root-dir']):
             return False
         if not os.path.isdir(config['dataset']['root-dir'] + config['dataset']['audio-directory']):
+            return False
+        if not os.path.isfile(config['dataset']['root-dir'] + config['dataset']['definition-file']):
             return False
         return True
 
@@ -111,5 +110,5 @@ class GeneratorConfigLoader:
     def __init__(self):
         pass
 
-    def load_config(self, path: str) -> Dict[str, Union[str, float, int]]:
+    def load_config(self, path: str) -> Dict:
         pass

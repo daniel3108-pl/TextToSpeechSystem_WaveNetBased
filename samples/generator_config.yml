@@ -1,0 +1,4 @@
+model-file: some_path/model.pth
+audio-format: wav
+output-dir: someout/
+output-file: somename

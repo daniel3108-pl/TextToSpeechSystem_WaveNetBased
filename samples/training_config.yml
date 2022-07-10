@@ -15,7 +15,7 @@ model:                              # Konfiguracja parameterów uczenia
     learning-rate: 0.01
   output-file: out.pth
 dataset:                            # Konfiguracja zestawu danych uczących
-  root-dir: .
-  definition-file: costam.csv       # csv z opisem i powiązaniem wypowiedzi tekstowych z plikami csv
-  audio-directory: /audio         # ścieżka do plików audio w kontekscie root-dir np. root-dir/sciezka
+  root-dir: ./dataset/
+  definition-file: metadata.csv       # csv z opisem i powiązaniem wypowiedzi tekstowych z plikami csv
+  audio-directory: wavs/         # ścieżka do plików audio w kontekscie root-dir np. root-dir/sciezka
 
