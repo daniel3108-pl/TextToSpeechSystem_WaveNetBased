@@ -8,14 +8,24 @@ WaveNet Text to speech system
 Dokumentacja kodu źrodłowego projektu inżynierskiego, prezentującego aplikację konsolową pozwalającą
 na generowanie wypowiedzi audio na podstawie wyuczonego modelu.
 
+Wykonawca:
+   Daniel Świetlik
+   Informatyka AEiI
+   Politechnika Śląska
+
 .. toctree::
    :maxdepth: 2
    :caption: Spis treści:
 
    _modulesdocs/gettingstarted
    _modulesdocs/modules
+   _modulesdocs/sampleresults
    _modulesdocs/refrences
-
+   _modulesdocs/encoder
+   _modulesdocs/decoder
+   _modulesdocs/wavenet
+   _modulesdocs/utils
+   _modulesdocs/network_utils
 
 Indeksy i tabele
 ==================

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'WaveNet TTS'
+project = 'WaveNet TTS - Daniel Świeltik'
 copyright = '2022, Daniel Świetlik'
 author = 'Daniel Świetlik'
 
@@ -47,7 +47,7 @@ language = 'pl'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'conf.py']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -67,5 +67,4 @@ autodoc_default_options = {
     "members": True,
     "undoc-members": True,
     "private-members": True,
-    "special-members": True,
 }
