@@ -8,12 +8,13 @@ import torchaudio
 from torch.utils.data import Dataset
 
 from utils.math_utils import to_mel_spect
+from utils.zip_file_handler import ZipFileHandler
 
 
 class SpeechSamplesDataset(Dataset):
     """Klasa ulatwiajaca ladowanie zestwau plikow audio
     """
-    def __init__(self, csv_file, root_dir, csv_sep="\t", transform=None, cuda=False):
+    def __init__(self, csv_file, root_dir, csv_sep="\t", transform=None, cuda=False, is_zip=False):
         """Metoda inicializujaca klase zestawu danych
 
         :param csv_file: sciezka do pliku csv opisujacy zestaw danych tekstowych
@@ -22,7 +23,17 @@ class SpeechSamplesDataset(Dataset):
         :param transform:
         :return: None
         """
-        self.audio_frame = pd.read_csv(root_dir + csv_file, sep=csv_sep)
+        self.is_zip = is_zip
+        if not self.is_zip:
+            self.audio_frame = pd.read_csv(root_dir + csv_file, sep=csv_sep)
+        else:
+            self.zip_filehandler = ZipFileHandler(root_dir)
+            self.zip_filehandler.load_zip()
+
+            self.audio_frame = pd.read_csv(self.zip_filehandler.get_file(csv_file), sep=csv_sep)
+            print(self.audio_frame.head(5))
+            self.zip_filehandler.close()
+
         self.root_dir = root_dir
         self.transform = transform
         if torch.cuda.is_available():
@@ -45,9 +56,16 @@ class SpeechSamplesDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        audio_name = os.path.join(self.root_dir,
-                                  self.audio_frame.iloc[idx, 0]) + ".wav"
-        waveform, samplerate = torchaudio.load(audio_name)
+        if not self.is_zip:
+            audio_name = os.path.join(self.root_dir,
+                                      self.audio_frame.iloc[idx, 0]) + ".wav"
+            waveform, samplerate = torchaudio.load(audio_name)
+        else:
+            audio_name = os.path.join(self.audio_frame.iloc[idx, 0]) + ".wav"
+            self.zip_filehandler.load_zip()
+            waveform, samplerate = torchaudio.load(self.zip_filehandler.get_file(audio_name))
+            self.zip_filehandler.close()
+
         mel = torch.Tensor(to_mel_spect(waveform, samplerate)).to(torch.float32)
 
         if self.__cuda:
@@ -88,3 +106,4 @@ class SpeechSamplesDataset(Dataset):
         train_size = int(len(self) * train_size)
         test_size = len(self) - train_size
         return torch.utils.data.random_split(self, [train_size, test_size])
+

@@ -9,6 +9,7 @@ from typing import *
 import yaml
 
 from .other_utils import is_int, is_float
+from .zip_file_handler import ZipFileHandler
 
 
 class TrainingConfigLoader:
@@ -125,13 +126,39 @@ class TrainingConfigLoader:
         :param config: Słownik z konfiguracją
         :return: True lub False w zależności od wyniku funkcji
         """
-        if not os.path.isdir(config['dataset']['root-dir']):
+        if not config['dataset']['root-dir'].endswith(".zip") and not os.path.isdir(config['dataset']['root-dir']):
             return False
+        elif config['dataset']['root-dir'].endswith(".zip") and os.path.isfile(config['dataset']['root-dir']):
+            self.config_logger.info("Dataset in zip archive was detected. Starting handling zipfile")
+            return self.__handle_rootdir_beingzip(config['dataset']['root-dir'],
+                                           config['dataset']['definition-file'],
+                                           config['dataset']['audio-directory'])
+
         if not os.path.isdir(config['dataset']['root-dir'] + config['dataset']['audio-directory']):
             return False
         if not os.path.isfile(config['dataset']['root-dir'] + config['dataset']['definition-file']):
             return False
         return True
+
+    def __handle_rootdir_beingzip(self, rootdir: str, deffile: str, wav_dir: str) -> bool:
+        zip_hanlder = ZipFileHandler(rootdir)
+        zip_hanlder.load_zip()
+
+        filenames = zip_hanlder.get_filenames()
+        if not deffile in filenames:
+            zip_hanlder.close()
+            self.config_logger.error("metadata file {} was not found".format(deffile))
+            return False
+
+        if not wav_dir in filenames:
+            zip_hanlder.close()
+            self.config_logger.error("No wav file dir {}".format(wav_dir))
+            return False
+
+        zip_hanlder.close()
+        return True
+
+
 
 
 class GeneratorConfigLoader:

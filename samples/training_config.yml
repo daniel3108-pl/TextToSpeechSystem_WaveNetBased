@@ -15,6 +15,6 @@ model:                              # Konfiguracja parameterów uczenia
     learning-rate: 0.01
   output-file: out.pth
 dataset:                            # Konfiguracja zestawu danych uczących
-  root-dir: ./dataset/
+  root-dir: ./dataset.zip
   definition-file: metadata.csv       # csv z opisem i powiązaniem wypowiedzi tekstowych z plikami csv
   audio-directory: wavs/         # ścieżka do plików audio w kontekscie root-dir np. root-dir/sciezka

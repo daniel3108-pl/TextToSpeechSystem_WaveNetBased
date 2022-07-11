@@ -17,3 +17,4 @@ _static/
 _templates/
 docs/
 .pytest_cache/
+dataset.zip

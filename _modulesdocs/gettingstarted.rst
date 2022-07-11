@@ -116,6 +116,73 @@ Wynik:
       --out OUT_FILE   Name of output file
       --text TEXT      Text to generate audio from
 
+Przykładowe pliki configuracyjne:
+-----------------------
+
+Pliki konfiguracyjne tworzymy używając standardu yaml. Poniżej przedstawione zostaną przykładowe
+pliki konfiguracyjne dla każdego z modułów aplikacji.
+
+
+Konfiguracja trenowania:
+............
+
+.. code-block:: yaml
+
+    # Przykładowy plik Konfiguracyjny do trenowania modelu
+    #
+    model:                              # Konfiguracja parameterów uczenia
+      encoder:                          # konfiguracja dla encodera
+        epochs: 20
+        batch-size: 10
+        learning-rate: 0.01
+      decoder:                          # konfiguracja dla decodera
+        epochs: 20
+        batch-size: 10
+        learning-rate: 0.01
+      wavenet:                          # konfiguracja dla wavenetu
+        epochs: 20
+        batch-size: 10
+        learning-rate: 0.01
+      output-file: out.pth
+    dataset:                            # Konfiguracja zestawu danych uczących
+      root-dir: ./dataset/
+      definition-file: metadata.csv       # csv z opisem i powiązaniem wypowiedzi tekstowych z plikami csv
+      audio-directory: wavs/         # ścieżka do plików audio w kontekscie root-dir np. root-dir/sciezka
+
+Konfiguracja generowania mowy:
+........
+
+.. code-block:: yaml
+
+    model-file: some_path/model.pth
+    audio-format: wav
+    output-dir: someout/
+    output-file: somename
+
+Przygotowania zestawu danych do trenowania:
+----------------------
+
+Przygotowany zestaw danych powinien być w archiwum podany jako archiwum .zip lub jako struktura katalogów.
+
+Zarówno struktura jaki plik zip powinny prezentować taką hierarchię:
+
+.. code-block::
+
+    dataset
+    ├── README
+    ├── metadata.csv
+    └── wavs/
+
+(Plik README jest nie potrzebny)
+
+Plik metadata.csv posiada 3 kolumny, pierwsza z nazwą pliku wav, druga z wypowiedzią z zachowanymi znakami specjlanymi, trzecia bez znaków specjalnych a liczby prezentowane jako słowa
+Katalog wavs/ przechowuje odpowiadające dla pliku csv pliki audio.
+
+Nazewnictwo katalogów i pliku csv jest dowolne przyczym należy je odpowiednio opisać w pliku konfiguracyjnym.
+
+W przypadku gdy korzystamy z pliku zip, root-dir w konfiguracji jest podawana ścieżka pliku zip.
+W przypadku użycia katalogu oznacza on ktalog z o struktórze prezentowanej powyżej.
+
 Przykładowe zestwy danych
 ----------------------
 

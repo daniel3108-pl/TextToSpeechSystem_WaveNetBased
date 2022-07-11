@@ -3,7 +3,6 @@ from typing import *
 
 from torch.utils.data import DataLoader
 
-from encoder.text_preprocessor import TextPreprocessor, OneHotVectorSequencer
 from network_utils.dataset import SpeechSamplesDataset
 from utils import default_config
 from utils.config_loader import TrainingConfigLoader
@@ -21,7 +20,10 @@ class TtsTrainer:
         :raises ConfigLoadingUnsuccessful: kiedy nie udało się załadować poprawnego pliku konfiguracyjnego
         """
         config_loader = TrainingConfigLoader()
-        self.config = config_loader.load_config(config_path) or default_config.training_config
+        loaded_config = config_loader.load_config(config_path)
+        if loaded_config is None:
+            logging.warning("Provided config was not correct, loading default configuration")
+        self.config = loaded_config or default_config.training_config
         if self.config is None and config_path is not None:
             raise ConfigLoadingUnsuccessful("Could not load config file")
 
@@ -32,8 +34,8 @@ class TtsTrainer:
         """
         root_dir = self.config['dataset']['root-dir']
         definition_f = self.config['dataset']['definition-file']
-        self.dataset = SpeechSamplesDataset(definition_f, root_dir)
-        logging.info("|Dataset '{}' loaded successfully".format(root_dir + definition_f))
+        self.dataset = SpeechSamplesDataset(definition_f, root_dir, is_zip=root_dir.endswith('.zip'))
+        logging.info("|Dataset '{}' loaded successfully".format(root_dir))
 
         # batch_size na 1, ponieważ każdy tensor różni się rozmiarem, więc należy ręcznie dzielić dane na batche
         self.dataloader = DataLoader(self.dataset, batch_size=1, shuffle=True)
@@ -42,22 +44,22 @@ class TtsTrainer:
 
         n_sample = next(self.dataloader)
         print(n_sample)
-
-        example_text = n_sample.get('transcription')[0]
-
-        text_pre = TextPreprocessor()
-        cleaned_text = text_pre.clean(example_text)
-
-        one_hot = OneHotVectorSequencer()
-        seq_text = one_hot.sequence_text(cleaned_text)
-
-        print("\nSequenced text:")
-        print(seq_text)
-
-        print("\nDesequenced text:")
-        print(one_hot.desequence_text(seq_text))
-        print("Og text")
-        print(example_text)
+        #
+        # example_text = n_sample.get('transcription')[0]
+        #
+        # text_pre = TextPreprocessor()
+        # cleaned_text = text_pre.clean(example_text)
+        #
+        # one_hot = OneHotVectorSequencer()
+        # seq_text = one_hot.sequence_text(cleaned_text)
+        #
+        # print("\nSequenced text:")
+        # print(seq_text)
+        #
+        # print("\nDesequenced text:")
+        # print(one_hot.desequence_text(seq_text))
+        # print("Og text")
+        # print(example_text)
         #
         # inpu = torch.Tensor(seq_text).to(torch.int32)
         #
