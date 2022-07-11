@@ -28,7 +28,7 @@ class EncoderNetwork (nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         for conv in self.convs:
             x = F.dropout(F.relu(conv(x)), 0.5, training=True)
-
+        return x
 
 
 

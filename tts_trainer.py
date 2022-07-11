@@ -1,4 +1,3 @@
-import logging
 from typing import *
 
 from torch.utils.data import DataLoader
@@ -7,12 +6,16 @@ from network_utils.dataset import SpeechSamplesDataset
 from utils import default_config
 from utils.config_loader import TrainingConfigLoader
 from utils.exceptions import ConfigLoadingUnsuccessful
+from utils.logger import Logger
 
 
 class TtsTrainer:
     """Klasa, która odpowieada za proces trenowania modelu, wywoływanie odpowiednich akcji
         by ten model wytrenować
     """
+
+    logger = Logger.get_logger("TTS Trainer")
+
     def __init__(self, config_path: Optional[str]) -> None:
         """Konstruktor klasy, który ładuje plik konfiguracyjny
 
@@ -22,12 +25,12 @@ class TtsTrainer:
         config_loader = TrainingConfigLoader()
         loaded_config = config_loader.load_config(config_path)
         if loaded_config is None:
-            logging.warning("Provided config was not correct, loading default configuration")
+            self.logger.warning("Provided config was not correct, loading default configuration")
         self.config = loaded_config or default_config.training_config
         if self.config is None and config_path is not None:
             raise ConfigLoadingUnsuccessful("Could not load config file")
 
-        logging.info("|Training config file '{}' loaded successfully".format(config_path))
+        self.logger.info("|Training config file '{}' loaded successfully".format(config_path))
 
     def do_training(self) -> None:
         """Metoda rozpoczynająca proces trenowania modelu i wszystkie akcje z tym związane
@@ -35,12 +38,12 @@ class TtsTrainer:
         root_dir = self.config['dataset']['root-dir']
         definition_f = self.config['dataset']['definition-file']
         self.dataset = SpeechSamplesDataset(definition_f, root_dir, is_zip=root_dir.endswith('.zip'))
-        logging.info("|Dataset '{}' loaded successfully".format(root_dir))
+        self.logger.info("|Dataset '{}' loaded successfully".format(root_dir))
 
         # batch_size na 1, ponieważ każdy tensor różni się rozmiarem, więc należy ręcznie dzielić dane na batche
         self.dataloader = DataLoader(self.dataset, batch_size=1, shuffle=True)
         self.dataloader = iter(self.dataloader)
-        logging.info("|Dataloader for dataset prepared successfully")
+        self.logger.info("|Dataloader for dataset prepared successfully")
 
         n_sample = next(self.dataloader)
         print(n_sample)

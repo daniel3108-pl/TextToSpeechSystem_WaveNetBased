@@ -29,9 +29,7 @@ class SpeechSamplesDataset(Dataset):
         else:
             self.zip_filehandler = ZipFileHandler(root_dir)
             self.zip_filehandler.load_zip()
-
             self.audio_frame = pd.read_csv(self.zip_filehandler.get_file(csv_file), sep=csv_sep)
-            print(self.audio_frame.head(5))
             self.zip_filehandler.close()
 
         self.root_dir = root_dir

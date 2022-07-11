@@ -23,11 +23,6 @@ class ZipFileHandler:
             return self.zipfile.namelist()
         raise ZipFileIsNotOpened("Zip file is not opened")
 
-    def get_directories(self) -> List[str]:
-        if self.zipfile:
-            self.zipfile.printdir()
-        raise ZipFileIsNotOpened("Zip file is not opened")
-
     def load_zip(self):
         try:
             self.zipfile = zipfile.ZipFile(self.__file_path)

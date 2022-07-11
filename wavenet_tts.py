@@ -7,6 +7,7 @@ import logging
 from audio_generator import AudioGenerator
 from tts_trainer import TtsTrainer
 from utils.exceptions import ConfigLoadingUnsuccessful
+from utils.logger import Logger
 
 
 def argument_parser() -> argparse.ArgumentParser:
@@ -35,14 +36,16 @@ def main(args: argparse.Namespace) -> None:
     :param args: obiekt z przekazanymi argumentami przez użytkownika
     :return: None
     """
-    logging.basicConfig(level=logging.INFO)
+    Logger.set_default_logging_level(logging.INFO)
+    logger = Logger.get_logger("Main")
+    logger.warning("Cos tam")
 
     if args.func == "train":
         try:
             trainer = TtsTrainer(args.config)
             trainer.do_training()
         except ConfigLoadingUnsuccessful as ex:
-            logging.exception(ex)
+            logger.exception(ex)
     elif args.func == "generate":
         text = args.text or input("Text to generate from: \n")
         audio_generator = AudioGenerator(text, None)

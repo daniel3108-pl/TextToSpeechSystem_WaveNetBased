@@ -8,6 +8,7 @@ from typing import *
 
 import yaml
 
+from .logger import Logger
 from .other_utils import is_int, is_float
 from .zip_file_handler import ZipFileHandler
 
@@ -16,7 +17,7 @@ class TrainingConfigLoader:
     """Klasa ładująca plik konfiguracyjny yaml do specyfikowania parametrów uczenia
     """
 
-    config_logger: logging.Logger = logging.getLogger("Training Config Loader")
+    config_logger: logging.Logger = Logger.get_logger("Training Config Loader")
     """Pole z loggerem"""
 
     def __init__(self) -> None:
@@ -28,7 +29,7 @@ class TrainingConfigLoader:
         :return: Obiekt typu Dictionary z załadowanymi argumentami
         """
         if not os.path.isfile(path):
-            self.config_logger.error("Config file of path: {}, does not exist".format(path))
+            self.config_logger.error("|Config file of path: {}, does not exist".format(path))
             raise FileNotFoundError("Config file of path: {}, does not exist".format(path))
 
         with open(path) as f:
@@ -64,12 +65,12 @@ class TrainingConfigLoader:
             if config['model'][m]["epochs"] is None \
                     or config['model'][m]["batch-size"] is None \
                     or config['model'][m]["learning-rate"] is None:
-                self.config_logger.error("Config for {} misses {} fields" \
+                self.config_logger.error("|Config for {} misses {} fields" \
                                          .format(m, {"epochs", "batch-size", "learning-rate"} - set(config['model'][m].keys())))
                 return False
 
         if not list(config['dataset'].keys()) == ['root-dir', 'definition-file', 'audio-directory']:
-            self.config_logger.error("Config for dataset misses {} fields" \
+            self.config_logger.error("|Config for dataset misses {} fields" \
                                      .format({'definition-file', 'audio-directory', 'root-dir'} - set(config['dataset'].keys())))
             return False
 
@@ -129,7 +130,7 @@ class TrainingConfigLoader:
         if not config['dataset']['root-dir'].endswith(".zip") and not os.path.isdir(config['dataset']['root-dir']):
             return False
         elif config['dataset']['root-dir'].endswith(".zip") and os.path.isfile(config['dataset']['root-dir']):
-            self.config_logger.info("Dataset in zip archive was detected. Starting handling zipfile")
+            self.config_logger.info("|Dataset in zip archive was detected. Started handling zip file.")
             return self.__handle_rootdir_beingzip(config['dataset']['root-dir'],
                                            config['dataset']['definition-file'],
                                            config['dataset']['audio-directory'])
@@ -147,12 +148,12 @@ class TrainingConfigLoader:
         filenames = zip_hanlder.get_filenames()
         if not deffile in filenames:
             zip_hanlder.close()
-            self.config_logger.error("metadata file {} was not found".format(deffile))
+            self.config_logger.error("|Metadata file {} was not found".format(deffile))
             return False
 
         if not wav_dir in filenames:
             zip_hanlder.close()
-            self.config_logger.error("No wav file dir {}".format(wav_dir))
+            self.config_logger.error("|No wav files dir {}".format(wav_dir))
             return False
 
         zip_hanlder.close()
