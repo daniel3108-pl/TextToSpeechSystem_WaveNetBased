@@ -1,4 +1,4 @@
-import default_config
+from utils import default_config
 
 
 class AudioGenerator:

@@ -1,8 +1,14 @@
-from typing import *
-import yaml
-import os
-from utils import is_int, is_float
+"""
+Moduł odpowiedzialny za klasy ładujące pliki konfiguracyjne
+"""
+
 import logging
+import os
+from typing import *
+
+import yaml
+
+from .other_utils import is_int, is_float
 
 
 class TrainingConfigLoader:
@@ -10,11 +16,12 @@ class TrainingConfigLoader:
     """
 
     config_logger: logging.Logger = logging.getLogger("Training Config Loader")
+    """Pole z loggerem"""
 
     def __init__(self) -> None:
         pass
 
-    def load_config(self, path: str) -> Dict:
+    def load_config(self, path: str) -> Optional[Dict]:
         """Metoda ładująca plik konfiguracyjny
         :param path: ścieżka do pliku konfiguracyjnego
         :return: Obiekt typu Dictionary z załadowanymi argumentami
@@ -38,6 +45,11 @@ class TrainingConfigLoader:
                and self.__has_proper_dataset_values(config)
 
     def __has_proper_fields(self, config: Dict) -> bool:
+        """Metoda sptawdzająca czy plik konfiguracyjny ma odpowiednie pola
+
+        :param config: słownik z definiciją konfiguracji
+        :return: True lub False w zależności od wyniku
+        """
         if not list(config.keys()) == ['model', 'dataset']:
             logging.error("Config misses model or dataset categories")
             return False
@@ -62,7 +74,12 @@ class TrainingConfigLoader:
 
         return True
 
-    def __has_proper_model_value(self, config: Dict):
+    def __has_proper_model_value(self, config: Dict) -> bool:
+        """Sprawdza czy konfiguracja modelu ma odpowiednie formaty wartości
+
+        :param config: słownik z definicją konfiguracji
+        :return: True lub False w zależności od wyniku
+        """
         model_config = config["model"]
 
         for model in ['encoder', 'decoder', 'wavenet']:
@@ -80,6 +97,12 @@ class TrainingConfigLoader:
         return True
 
     def __is_model_type_config_correct(self, model_config: Dict, model: str) -> bool:
+        """Sprawdza poprawność wartości dla danego typu modelu w pliku konfiguracyjnym
+
+        :param model_config: słownik z konfiguracją konkretnego modelu
+        :param model: nazwa modelu do sprawdzenia
+        :return: True lub False w zależności od wyniku
+        """
         model_config_for_type = model_config[model]
 
         if not is_int(model_config_for_type["epochs"]) or \
@@ -97,6 +120,11 @@ class TrainingConfigLoader:
         return True
 
     def __has_proper_dataset_values(self, config: Dict) -> bool:
+        """Sprawdza czy sa poprawne wartości w konfiguracji zestawu danych
+
+        :param config: Słownik z konfiguracją
+        :return: True lub False w zależności od wyniku funkcji
+        """
         if not os.path.isdir(config['dataset']['root-dir']):
             return False
         if not os.path.isdir(config['dataset']['root-dir'] + config['dataset']['audio-directory']):
@@ -107,8 +135,16 @@ class TrainingConfigLoader:
 
 
 class GeneratorConfigLoader:
+    """Klasa odpowiadająca za ładowanie i walidację pliku konfiguracyjnego dla generowania audio
+
+    """
     def __init__(self):
         pass
 
-    def load_config(self, path: str) -> Dict:
+    def load_config(self, path: str) -> Optional[Dict]:
+        """Metoda ładująca i walidująca plik konfiguracyjny
+
+        :param path: Ścieżka do pliku konfiguracyjnego
+        :return: Słownik z definicją konfiguracji lub None
+        """
         pass

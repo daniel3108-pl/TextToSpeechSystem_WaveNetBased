@@ -26,7 +26,9 @@ training_config: Dict = {
         'audio-directory': 'wavs/'
     }
 }
+"""Domyślna konfiguracja dla trenowania modelu"""
 
 generator_config: Dict = {
 
 }
+"""Domyślna konfiguracja dla generatora audio"""

@@ -3,11 +3,11 @@ from typing import *
 
 from torch.utils.data import DataLoader
 
-import default_config
-from config_loader import TrainingConfigLoader
 from encoder.text_preprocessor import TextPreprocessor, OneHotVectorSequencer
-from exceptions import ConfigLoadingUnsuccessful
 from network_utils.dataset import SpeechSamplesDataset
+from utils import default_config
+from utils.config_loader import TrainingConfigLoader
+from utils.exceptions import ConfigLoadingUnsuccessful
 
 
 class TtsTrainer:

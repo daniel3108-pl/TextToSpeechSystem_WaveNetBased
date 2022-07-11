@@ -1,12 +1,19 @@
+"""Moduł startowy aplikacji
+"""
+
 import argparse
 import logging
 
 from audio_generator import AudioGenerator
-from exceptions import ConfigLoadingUnsuccessful
 from tts_trainer import TtsTrainer
+from utils.exceptions import ConfigLoadingUnsuccessful
 
 
 def argument_parser() -> argparse.ArgumentParser:
+    """Funkcja odpowiadająca za parsowanie argumentów z konsoli podanych przez użytkownika
+
+    :return: Obiekt parsera argumentów
+    """
     parser = argparse.ArgumentParser()
 
     subparsers = parser.add_subparsers(help="Choose program functionality [training model | generating audio from text], \n"
@@ -23,6 +30,11 @@ def argument_parser() -> argparse.ArgumentParser:
 
 
 def main(args: argparse.Namespace) -> None:
+    """Funkcja wejściowa aplikacji
+
+    :param args: obiekt z przekazanymi argumentami przez użytkownika
+    :return: None
+    """
     logging.basicConfig(level=logging.INFO)
 
     if args.func == "train":
@@ -38,5 +50,7 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
+    """Wejście aplikacji
+    """
     parser = argument_parser()
     main(parser.parse_args())

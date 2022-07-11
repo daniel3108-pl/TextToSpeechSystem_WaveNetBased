@@ -7,7 +7,7 @@ import torch
 import torchaudio
 from torch.utils.data import Dataset
 
-from utils import to_mel_spect
+from utils.math_utils import to_mel_spect
 
 
 class SpeechSamplesDataset(Dataset):
